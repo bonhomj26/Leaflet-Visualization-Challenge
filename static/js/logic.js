@@ -1,8 +1,7 @@
-// Visualizing-Data-with-Leaflet - logic.js
+// Leaflet Visualization Challenge - logic.js
 
 // Earthquakes & Tectonic Plates GeoJSON URL Variables
 var earthquakesURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson"
-//var EarthquakesURL = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson"
 var platesURL = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
 
 // Initialize & Create Two Separate LayerGroups: earthquakes & tectonicPlates
@@ -55,68 +54,68 @@ var myMap = L.map("map", {
 L.control.layers(baseMaps, overlayMaps).addTo(myMap);
 
 // Retrieve earthquakesURL (USGS Earthquakes GeoJSON Data) with D3
-d3.json(earthquakesURL, function(earthquakeData) {
+d3.json(earthquakesURL, function (earthquakeData) {
     // Function to Determine Size of Marker Based on the Magnitude of the Earthquake
     function markerSize(magnitude) {
         if (magnitude === 0) {
-          return 1;
+            return 1;
         }
         return magnitude * 3;
     }
     // Function to Determine Style of Marker Based on the Magnitude of the Earthquake
     function styleInfo(feature) {
         return {
-          opacity: 1,
-          fillOpacity: 1,
-          fillColor: chooseColor(feature.properties.mag),
-          color: "#000000",
-          radius: markerSize(feature.properties.mag),
-          stroke: true,
-          weight: 0.5
+            opacity: 1,
+            fillOpacity: 1,
+            fillColor: chooseColor(feature.properties.mag),
+            color: "#000000",
+            radius: markerSize(feature.properties.mag),
+            stroke: true,
+            weight: 0.5
         };
     }
     // Function to Determine Color of Marker Based on the Magnitude of the Earthquake
     function chooseColor(magnitude) {
         switch (true) {
-        case magnitude > 5:
-            return "#581845";
-        case magnitude > 4:
-            return "#900C3F";
-        case magnitude > 3:
-            return "#C70039";
-        case magnitude > 2:
-            return "#FF5733";
-        case magnitude > 1:
-            return "#FFC300";
-        default:
-            return "#DAF7A6";
+            case magnitude > 5:
+                return "#581845";
+            case magnitude > 4:
+                return "#900C3F";
+            case magnitude > 3:
+                return "#C70039";
+            case magnitude > 2:
+                return "#FF5733";
+            case magnitude > 1:
+                return "#FFC300";
+            default:
+                return "#DAF7A6";
         }
     }
     // Create a GeoJSON Layer Containing the Features Array on the earthquakeData Object
     L.geoJSON(earthquakeData, {
-        pointToLayer: function(feature, latlng) {
+        pointToLayer: function (feature, latlng) {
             return L.circleMarker(latlng);
         },
         style: styleInfo,
         // Function to Run Once For Each feature in the features Array
         // Give Each feature a Popup Describing the Place & Time of the Earthquake
-        onEachFeature: function(feature, layer) {
-            layer.bindPopup("<h4>Location: " + feature.properties.place + 
-            "</h4><hr><p>Date & Time: " + new Date(feature.properties.time) + 
-            "</p><hr><p>Magnitude: " + feature.properties.mag + "</p>");
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup("<h4>Location: " + feature.properties.place +
+                "</h4><hr><p>Date & Time: " + new Date(feature.properties.time) +
+                "</p><hr><p>Magnitude: " + feature.properties.mag + "</p>");
         }
-    // Add earthquakeData to earthquakes LayerGroups 
+        // Add earthquakeData to earthquakes LayerGroups 
     }).addTo(earthquakes);
     // Add earthquakes Layer to the Map
     earthquakes.addTo(myMap);
 
     // Retrieve platesURL (Tectonic Plates GeoJSON Data) with D3
-    d3.json(platesURL, function(plateData) {
+    d3.json(platesURL, function (plateData) {
         // Create a GeoJSON Layer the plateData
         L.geoJson(plateData, {
             color: "#DC143C",
             weight: 2
-        // Add plateData to tectonicPlates LayerGroups 
+            // Add plateData to tectonicPlates LayerGroups 
         }).addTo(tectonicPlates);
         // Add tectonicPlates Layer to the Map
         tectonicPlates.addTo(myMap);
@@ -124,9 +123,9 @@ d3.json(earthquakesURL, function(earthquakeData) {
 
     // Set Up Legend
     var legend = L.control({ position: "bottomright" });
-    legend.onAdd = function() {
-        var div = L.DomUtil.create("div", "info legend"), 
-        magnitudeLevels = [0, 1, 2, 3, 4, 5];
+    legend.onAdd = function () {
+        var div = L.DomUtil.create("div", "info legend"),
+            magnitudeLevels = [0, 1, 2, 3, 4, 5];
 
         div.innerHTML += "<h3>Magnitude</h3>"
 
